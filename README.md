@@ -14,3 +14,9 @@ https://cloud.tencent.com/product/scf
 ![image](https://user-images.githubusercontent.com/31857367/147519550-260a4a5f-f19b-4cca-ad43-706134ab3706.png)
 ### 在线开发部署
 ![image](https://user-images.githubusercontent.com/31857367/147519525-94e75ce5-49af-4cc1-a1aa-66f017e01c9e.png)
+### 微信公众号启用开发
+![image](https://user-images.githubusercontent.com/31857367/147520815-93a8129f-d0d2-4ec0-a8dc-bd9f52f1562c.png)
+### 公众号回复功能
+![image](https://user-images.githubusercontent.com/31857367/147520924-b524fc86-a6ae-4eb6-8414-d06b44502883.png)
+### 扫描公众号体验功能
+![qrcode_for_gh_8f0cc477b523_258](https://user-images.githubusercontent.com/31857367/147521099-7300842b-b01c-463c-9e9b-b9b3c9f1ee85.jpg)
