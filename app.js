@@ -118,3 +118,9 @@ app.use(function (err, req, res, next) {
 app.listen(9000, () => {
   console.log(`Server start on http://localhost:9000`);
 });
+
+app.get(`/addDataLocal`, (req, res) => {
+  console.log(req.query.name);
+  wechat.sendHolidayMsg(req.query.name);
+  res.send('成功');
+});

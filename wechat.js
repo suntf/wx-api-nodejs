@@ -1,4 +1,11 @@
 var Lunar = require('./calendar');
+const crypto = require('crypto'), //引入加密模块
+https = require('https'), //引入 htts 模块
+util = require('util'), //引入 util 工具包
+fs = require('fs'), //引入 util 工具包
+accessTokenJson = require('./access_token.json'); //引入本地存储的 access_token
+var config = require('./config');
+
 exports.textMessageMoYu = function(){
 	var weekday=new Array(7);
 	weekday[0]="周日";
@@ -49,6 +56,27 @@ exports.textMessageMoYu = function(){
 	距离中秋节还有:${zhongqiu}天
 	距离国庆节还有:${guoqing}天
 	上班是帮老板赚钱，摸鱼是赚老板的钱! 最后，祝愿天下所有摸鱼人，都能愉快的度过每一天…`
+}
+
+// 保存用户信息到本地文档
+exports.addDataLocal = function(FromUserName) {
+	addData(FromUserName);
+}
+
+// 发送假日提醒
+exports.sendHolidayMsg = function() {
+	fs.readFile('./from_user.json', "utf-8", function (err, data) {
+		if (err) {
+			console.log(err);
+		}
+
+		console.log(data);
+		console.log(typeof(data))
+		for (key in JSON.parse(data)) {
+			console.log(key);
+		}
+		
+	})
 }
 
 /**
@@ -144,4 +172,92 @@ function dateFormat(fmt, date) {
         };
     };
     return fmt;
+}
+
+function getAccessToken(){
+	return new Promise(function(resolve,reject){
+	  //获取当前时间 
+	  var currentTime = new Date().getTime();
+	  //格式化请求地址
+	  var url = util.format(config.accessTokenApi, config.apiDomain, config.appID, config.appScrect);
+	  //判断 本地存储的 access_token 是否有效
+	  if(accessTokenJson.access_token === "" || accessTokenJson.expires_time < currentTime){
+		requestGet(url).then(function(data){
+		  var result = JSON.parse(data); 
+		  if(data.indexOf("errcode") < 0){
+			accessTokenJson.access_token = result.access_token;
+			accessTokenJson.expires_time = new Date().getTime() + (parseInt(result.expires_in) - 200) * 1000;
+			//更新本地存储的
+			fs.writeFile('./access_token.json',JSON.stringify(accessTokenJson));
+			//将获取后的 access_token 返回
+			resolve(accessTokenJson.access_token);
+		  }else{
+			//将错误返回
+			resolve(result);
+		  } 
+		});
+	  }else{
+		//将本地存储的 access_token 返回
+		resolve(accessTokenJson.access_token); 
+	  }
+	});
+  }
+
+
+//用于处理 https Get请求方法
+function requestGet (url){
+  return new Promise(function(resolve,reject){
+	https.get(url,function(res){
+	  var buffer = [],result = "";
+	  //监听 data 事件
+	  res.on('data',function(data){
+		buffer.push(data);
+	  });
+	  //监听 数据传输完成事件
+	  res.on('end',function(){
+		result = Buffer.concat(buffer,buffer.length).toString('utf-8');
+		//将最后结果返回
+		resolve(result);
+	  });
+	}).on('error',function(err){
+	  reject(err);
+	});
+  });
+}
+
+
+//写入文件，会完全替换之前JSON文件中的内容
+function writeData(value) {
+	var str = JSON.stringify(value, "", "\t");
+ fs.writeFile('./from_user.json', str, function (err) {
+	 if (err) {
+		 console.error(err);
+	 }
+	 console.log('写入成功!');
+ })
+}
+
+
+// Object.assign(obj1, obj2);//合并两个obj的内容，重复的会被第一个obj替换,最后obj1的内容为obj1+obj2的内容
+// Object.keys(person).length;//查看当前obj里同级所有的key的总数，结果为数字
+// JSON.stringify(value);//将obj输出成json格式
+// JSON.stringify(value, "", "\t");//将obj输出成json格式同时自动格式化
+// JSON.parse(value);//将json格式的内容转化为obj
+// obj.arrayObj.push(value);//将传来的对象push进数组对象中(前两个写对应的对象)
+//读取文件然后在原有文件内容的基础上添加内容，如果key名重复则覆盖
+function addData(value) {
+ fs.readFile('./from_user.json', "utf-8", function (err, data) {
+	 if (err) {
+		 console.log(err);
+	 }
+	 var person = JSON.parse(data);
+	 person[value] = value;   
+	 var str = JSON.stringify(person, "", "\t");
+	 fs.writeFile('./from_user.json', str, function (err) {
+		 if (err) {
+			 console.error(err);
+		 }
+		 console.log('新增成功!');
+	 })
+ })
 }
