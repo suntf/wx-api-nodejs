@@ -27,6 +27,7 @@ app.use('/wx', (req, res) => {
                 if (message.EventKey) {
                     console.log('扫描二维码关注：' + message.EventKey + ' ' + message.ticket);
                 }
+                wechat.addDataLocal(message.FromUserName);
                 message.reply = '终于等到你，还好我没放弃' + '\n' + wechat.textMessageMoYu();
             } else if (message.Event === 'unsubscribe') {
                 message.reply = '';
@@ -119,8 +120,7 @@ app.listen(9000, () => {
   console.log(`Server start on http://localhost:9000`);
 });
 
-app.get(`/addDataLocal`, (req, res) => {
-  console.log(req.query.name);
-  wechat.sendHolidayMsg(req.query.name);
+app.get(`/sendHolidayMsg`, (req, res) => {
+  wechat.sendHolidayMsg();
   res.send('成功');
 });

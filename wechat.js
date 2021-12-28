@@ -70,9 +70,10 @@ exports.sendHolidayMsg = function() {
 			console.log(err);
 		}
 
-		console.log(data);
-		console.log(typeof(data))
+		// console.log(data);
+		// console.log(typeof(data))
 		for (key in JSON.parse(data)) {
+			
 			console.log(key);
 		}
 		
