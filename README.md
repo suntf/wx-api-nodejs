@@ -7,6 +7,8 @@ Serverless 云函数、腾讯云、微信公众号开发服务、nodejs
 ## 使用免费的云函数做公众号开发服务。
 ## 云函数介绍
 https://cloud.tencent.com/document/product/583
+## 腾讯云服务
+https://cloud.tencent.com/act/new?from=14035
 ## 云函数开通使用
 https://cloud.tencent.com/product/scf
 
